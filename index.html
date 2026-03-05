@@ -3,30 +3,151 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Live Design Status - Liquid Glass Red</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Liquid Glass Pro - Transparent GIF Generator</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gifshot/0.4.5/gifshot.min.js"></script>
+    <style>
+        /* 1. SETUP TRANSPARENCY */
+        body {
+            background-color: transparent; /* Wajib untuk OBS */
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-family: 'Segoe UI', sans-serif;
+            overflow: hidden;
+        }
+
+        /* 2. AREA RAKAMAN (CANVAS CLEAR) */
+        #capture-area {
+            position: relative;
+            padding: 40px;
+            background: transparent; /* Pastikan tiada warna latar */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* 3. REKAAN LIQUID GLASS PREMIUM */
+        .glass-circle {
+            width: 160px;
+            height: 160px;
+            border-radius: 50%;
+            position: relative;
+            /* Bingkai Chrome Berkilat */
+            border: 4px solid #e0e0e0; 
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            overflow: hidden;
+            box-shadow: 
+                0 10px 30px rgba(0, 0, 0, 0.3),
+                inset 0 0 15px rgba(255, 255, 255, 0.5),
+                inset 0 10px 20px rgba(255, 255, 255, 0.3);
+            z-index: 2;
+        }
+
+        /* Pantulan Cahaya (Glossy Effect) */
+        .glass-circle::before {
+            content: "";
+            position: absolute;
+            top: 5%;
+            left: 15%;
+            width: 70%;
+            height: 30%;
+            background: linear-gradient(to bottom, rgba(255,255,255,0.6), transparent);
+            border-radius: 50% 50% 20% 20%;
+            z-index: 10;
+        }
+
+        /* Simbol Plus (+) */
+        .plus-icon {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 60px;
+            color: rgba(255, 255, 255, 0.4);
+            font-weight: 200;
+            z-index: 11;
+            pointer-events: none;
+        }
+
+        /* 4. CECAIR MERAH (MAGNETIC FLUID) */
+        .liquid-container {
+            filter: url('#gooey');
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+        }
+
+        .drop {
+            position: absolute;
+            background: #ff0000; /* Merah Pekat */
+            border-radius: 50%;
+            filter: blur(12px);
+            opacity: 0.95;
+        }
+
+        .drop1 { width: 90px; height: 90px; top: 10%; left: 10%; animation: move 5s infinite alternate ease-in-out; }
+        .drop2 { width: 70px; height: 70px; bottom: 10%; right: 10%; animation: move 7s infinite alternate-reverse ease-in-out; }
+        .drop3 { width: 60px; height: 60px; top: 40%; left: 30%; animation: move 6s infinite alternate ease-in-out; }
+
+        @keyframes move {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(40px, 30px) scale(1.4); }
+        }
+
+        /* 5. BUTANG KONTROL */
+        .controls {
+            margin-top: 30px;
+            text-align: center;
+        }
+
+        #btn-download {
+            padding: 12px 25px;
+            background: #ff0000;
+            color: white;
+            border: none;
+            border-radius: 30px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(255, 0, 0, 0.4);
+            transition: 0.3s;
+        }
+
+        #btn-download:hover {
+            transform: scale(1.05);
+            background: #cc0000;
+        }
+
+        #status {
+            color: #fff;
+            margin-top: 10px;
+            font-size: 13px;
+            display: none;
+        }
+    </style>
 </head>
 <body>
 
-    <div class="container">
-        <div class="title-status">DESIGN STATUS</div>
-
-        <div id="capture-area">
-            <div class="glass-circle">
-                <div class="liquid-container">
-                    <div class="drop drop1"></div>
-                    <div class="drop drop2"></div>
-                    <div class="drop drop3"></div>
-                    <div class="drop drop4"></div>
-                </div>
+    <div id="capture-area">
+        <div class="glass-circle">
+            <div class="plus-icon">+</div>
+            <div class="liquid-container">
+                <div class="drop drop1"></div>
+                <div class="drop drop2"></div>
+                <div class="drop drop3"></div>
             </div>
         </div>
+    </div>
 
-        <div class="live-label">LIVE DESIGNING...</div>
-
-        <button id="download-btn" onclick="createGIF()">Download as GIF</button>
-        <p id="status-msg" style="color: cyan; font-size: 12px; display: none;">Sila tunggu, sedang merakam 3 saat...</p>
+    <div class="controls">
+        <button id="btn-download" onclick="exportGIF()">DOWNLOAD CLEAR GIF</button>
+        <div id="status">Sedang merakam pergerakan cecair...</div>
     </div>
 
     <svg xmlns="http://www.w3.org/2000/svg" version="1.1" style="display:none;">
@@ -40,48 +161,35 @@
     </svg>
 
     <script>
-        function createGIF() {
-            const btn = document.getElementById('download-btn');
-            const msg = document.getElementById('status-msg');
+        function exportGIF() {
+            const status = document.getElementById('status');
+            const btn = document.getElementById('btn-download');
             
+            status.style.display = "block";
             btn.disabled = true;
-            btn.innerText = "Processing...";
-            msg.style.display = "block";
+            btn.innerText = "RECORDING...";
 
-            // Menggunakan gifshot untuk merakam elemen DOM
             gifshot.createGIF({
-                'gifWidth': 200,
-                'gifHeight': 200,
-                'interval': 0.1, // Kelajuan rakaman
-                'numFrames': 30, // Jumlah frame (3 saat jika 0.1s interval)
-                'images': [], // Kita akan guna elemen HTML sekejap lagi
+                'gifWidth': 250,
+                'gifHeight': 250,
+                'interval': 0.05, // Lebih kecil = lebih smooth
+                'numFrames': 40,   // Rakam sekitar 2-3 saat
                 'htmlElement': document.getElementById('capture-area'),
-                'fontWeight': 'normal',
-                'fontSize': '16px',
-                'fontFamily': 'sans-serif',
-                'fontColor': '#ffffff',
-                'textAlign': 'center',
-                'textBaseline': 'bottom',
-                'sampleInterval': 10,
-                'numWorkers': 2
+                'transparent': '#000000', // Cuba jadikan hitam sebagai telus jika perlu
+                'numWorkers': 4
             }, function(obj) {
                 if(!obj.error) {
-                    var image = obj.image,
-                    animatedImage = document.createElement('img');
-                    animatedImage.src = image;
-                    
-                    // Automatik download
-                    var link = document.createElement('a');
-                    link.href = image;
+                    const link = document.createElement('a');
+                    link.href = obj.image;
                     link.download = 'liquid-glass-logo.gif';
                     link.click();
-                    
-                    btn.disabled = false;
-                    btn.innerText = "Download as GIF";
-                    msg.style.display = "none";
                 }
+                status.style.display = "none";
+                btn.disabled = false;
+                btn.innerText = "DOWNLOAD CLEAR GIF";
             });
         }
     </script>
+
 </body>
 </html>
