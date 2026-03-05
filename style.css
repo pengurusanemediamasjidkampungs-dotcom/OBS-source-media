@@ -1,0 +1,94 @@
+/* --- 1. SETUP LAYOUT --- */
+body {
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: transparent; /* Untuk OBS transparency */
+  overflow: hidden;
+}
+
+.container {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* --- 2. BINGKAI GLASS & CHROME (BULAT) --- */
+.glass-circle {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  position: relative;
+  /* Bingkai Krom/Silver */
+  border: 4px solid rgba(255, 255, 255, 0.6);
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  
+  /* Kesan Cahaya & Pantulan */
+  box-shadow: 
+    0 8px 32px 0 rgba(0, 0, 0, 0.8),
+    inset 0 0 20px rgba(255, 255, 255, 0.4),
+    inset 0 10px 15px rgba(255, 255, 255, 0.2);
+  
+  overflow: hidden; /* Supaya cecair tak keluar dari bulatan */
+  z-index: 2;
+}
+
+/* Simbol 'Plus' yang lutsinar (seperti imej rujukan) */
+.glass-circle::after {
+  content: "+";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 60px;
+  font-family: Arial, sans-serif;
+  pointer-events: none;
+  z-index: 10;
+}
+
+/* --- 3. CECAIR MERAH (MAGNETIC FLUID EFFECT) --- */
+/* Menggunakan Gooey Filter untuk nampak seperti cecair */
+.liquid-container {
+  filter: url('#gooey'); 
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+}
+
+.drop {
+  position: absolute;
+  background: #ff0000; /* Warna cecair merah */
+  border-radius: 50%;
+  filter: blur(10px); /* Blur diperlukan untuk Gooey filter */
+  opacity: 0.9;
+  box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.5);
+}
+
+/* Kelompok cecair merah yang bergerak secara rawak */
+.drop1 { width: 80px; height: 80px; top: 20%; left: 10%; animation: move1 5s infinite alternate ease-in-out; }
+.drop2 { width: 60px; height: 60px; top: 50%; left: 50%; animation: move2 7s infinite alternate ease-in-out; }
+.drop3 { width: 90px; height: 90px; top: 10%; left: 40%; animation: move3 6s infinite alternate ease-in-out; }
+
+/* --- 4. ANIMASI WAVEFORM RAWAK --- */
+@keyframes move1 {
+  0%   { transform: translate(0, 0) scale(1); }
+  100% { transform: translate(40px, 50px) scale(1.2); }
+}
+
+@keyframes move2 {
+  0%   { transform: translate(0, 0) scale(1.1); }
+  100% { transform: translate(-30px, -40px) scale(0.8); }
+}
+
+@keyframes move3 {
+  0%   { transform: translate(0, 0) scale(0.9); }
+  100% { transform: translate(-20px, 60px) scale(1.3); }
+}
