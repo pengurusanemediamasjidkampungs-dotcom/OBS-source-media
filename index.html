@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Live Design Status - Liquid Glass</title>
+<style>
+  /* --- 1. SETTING ASAS (Latar Belakang OBS) --- */
+  body {
+    background-color: transparent; /* PENTING: Untuk OBS transparency */
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    overflow: hidden; /* Elakkan scrollbar */
+  }
+
+  /* Container Utama */
+  .container {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  /* --- 2. GAYA TEKS (Neon/Glow) --- */
+  .title-status {
+    color: #fff;
+    font-size: 20px;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 15px;
+    /* Kesan Glow Cyan */
+    text-shadow: 
+      0 0 5px rgba(0, 255, 255, 0.8),
+      0 0 10px rgba(0, 255, 255, 0.6),
+      0 0 15px rgba(0, 255, 255, 0.4);
+  }
+
+  .live-label {
+    color: #fff;
+    font-size: 16px;
+    margin-top: 10px;
+    font-weight: 500;
+  }
+
+  /* --- 3. GAYA BINGKAI KACA (Glassmorphism & Chrome) --- */
+  .liquid-glass-button {
+    width: 280px;
+    height: 80px;
+    background: rgba(255, 255, 255, 0.05); /* Sedikit kabur */
+    border: 3px solid rgba(192, 192, 192, 0.7); /* Bingkai Krom */
+    border-radius: 40px; /* Pill Shape */
+    position: relative;
+    overflow: hidden; /* PENTING: Potong cecair di luar bingkai */
+    
+    /* Kesan Pantulan Kaca */
+    box-shadow: 
+      0 4px 15px rgba(0, 0, 0, 0.4), /* Bayang Luar */
+      inset 0 0 15px rgba(255, 255, 255, 0.2), /* Glow Dalam */
+      inset 0 5px 10px rgba(255, 255, 255, 0.3); /* Pantulan Atas */
+  }
+
+  /* --- 4. CECAIR CECAIR (Animated Wave - Menggunakan Dua SVG) --- */
+  .wave-container {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    bottom: -15px; /* Selaraskan paras air */
+    left: 0;
+  }
+
+  .wave {
+    position: absolute;
+    width: 200%; /* Saiz berganda untuk gelombang berterusan */
+    height: 100%;
+    background-repeat: repeat-x;
+    background-position: 0 bottom;
+    transform-origin: center bottom;
+  }
+
+  /* Gelombang 1: Deep Blue (Belakang) */
+  .wave1 {
+    opacity: 0.6;
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 100" preserveAspectRatio="none"><path d="M0,80 C150,110 350,50 500,80 C650,110 850,50 1000,80 L1000,100 L0,100 Z" fill="%230000FF"/></svg>');
+    animation: wave_move 4s linear infinite; /* Gerakan linear */
+  }
+
+  /* Gelombang 2: Cyan (Depan) */
+  .wave2 {
+    opacity: 0.8;
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 100" preserveAspectRatio="none"><path d="M0,70 C150,40 350,100 500,70 C650,40 850,100 1000,70 L1000,100 L0,100 Z" fill="%2300FFFF"/></svg>');
+    animation: wave_move 2s linear infinite reverse; /* Berlawanan arah */
+  }
+
+  /* Animasi Pergerakan Gelombang */
+  @keyframes wave_move {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); } /* Gerak separuh saiz repeat */
+  }
+
+</style>
+</head>
+<body>
+
+  <div class="container">
+    <div class="title-status">DESIGN STATUS</div>
+
+    <div class="liquid-glass-button">
+      <div class="wave-container">
+        <div class="wave wave1"></div>
+        <div class="wave wave2"></div>
+      </div>
+    </div>
+
+    <div class="live-label">LIVE DESIGNING...</div>
+  </div>
+
+</body>
+</html>
