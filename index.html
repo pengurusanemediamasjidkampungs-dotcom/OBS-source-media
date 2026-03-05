@@ -5,22 +5,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Live Design Status - Liquid Glass Red</title>
     <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gifshot/0.4.5/gifshot.min.js"></script>
 </head>
 <body>
 
     <div class="container">
         <div class="title-status">DESIGN STATUS</div>
 
-        <div class="glass-circle">
-            <div class="liquid-container">
-                <div class="drop drop1"></div>
-                <div class="drop drop2"></div>
-                <div class="drop drop3"></div>
-                <div class="drop drop4"></div>
+        <div id="capture-area">
+            <div class="glass-circle">
+                <div class="liquid-container">
+                    <div class="drop drop1"></div>
+                    <div class="drop drop2"></div>
+                    <div class="drop drop3"></div>
+                    <div class="drop drop4"></div>
+                </div>
             </div>
         </div>
 
         <div class="live-label">LIVE DESIGNING...</div>
+
+        <button id="download-btn" onclick="createGIF()">Download as GIF</button>
+        <p id="status-msg" style="color: cyan; font-size: 12px; display: none;">Sila tunggu, sedang merakam 3 saat...</p>
     </div>
 
     <svg xmlns="http://www.w3.org/2000/svg" version="1.1" style="display:none;">
@@ -33,5 +39,49 @@
         </defs>
     </svg>
 
+    <script>
+        function createGIF() {
+            const btn = document.getElementById('download-btn');
+            const msg = document.getElementById('status-msg');
+            
+            btn.disabled = true;
+            btn.innerText = "Processing...";
+            msg.style.display = "block";
+
+            // Menggunakan gifshot untuk merakam elemen DOM
+            gifshot.createGIF({
+                'gifWidth': 200,
+                'gifHeight': 200,
+                'interval': 0.1, // Kelajuan rakaman
+                'numFrames': 30, // Jumlah frame (3 saat jika 0.1s interval)
+                'images': [], // Kita akan guna elemen HTML sekejap lagi
+                'htmlElement': document.getElementById('capture-area'),
+                'fontWeight': 'normal',
+                'fontSize': '16px',
+                'fontFamily': 'sans-serif',
+                'fontColor': '#ffffff',
+                'textAlign': 'center',
+                'textBaseline': 'bottom',
+                'sampleInterval': 10,
+                'numWorkers': 2
+            }, function(obj) {
+                if(!obj.error) {
+                    var image = obj.image,
+                    animatedImage = document.createElement('img');
+                    animatedImage.src = image;
+                    
+                    // Automatik download
+                    var link = document.createElement('a');
+                    link.href = image;
+                    link.download = 'liquid-glass-logo.gif';
+                    link.click();
+                    
+                    btn.disabled = false;
+                    btn.innerText = "Download as GIF";
+                    msg.style.display = "none";
+                }
+            });
+        }
+    </script>
 </body>
 </html>
